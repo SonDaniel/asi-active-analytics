@@ -2,6 +2,8 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Chart } from 'chart.js';
 import { AjaxService } from '../services/ajax.service';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,32 +16,105 @@ export class AppComponent {
   userCount: number;
   feedbackCount : number;
 
-  userData : any;
-  feedbackData : any;
+  userData : Array<Object>;
+  feedbackData : Array<Object>;
+  logData : Array<Object> = [];
+  rankData : Array<Object>;
 
   constructor(private ajax: AjaxService) {}
 
   ngOnInit() {
     this.ajax.init().then(() => {
-      this.ajax.get('users/').then(res => {
-        this.userData = res.data.results;
-        this.userCount = res.data.count;
+      let getUser = this.ajax.get('users/').then(res => {
+        this.userData = res.data;
+        this.userCount = res.data.length;
       });
-      this.ajax.get('feedback/').then(res => {
-        this.feedbackData = res.data.results;
-        this.feedbackCount = res.data.count;
+
+      let getFeedback = this.ajax.get('feedback/').then(res => {
+        this.feedbackData = res.data;
+        this.feedbackCount = res.data.length;
       });
-      this.ajax.get('activity-logs/').then(res => {
-        console.log(JSON.stringify(res));
+
+      let getActivityLog = this.ajax.get('activity-logs/').then(res => {
+        this.logData = this.logData.concat(res.data);
       });
-      this.ajax.get('event-logs/').then(res => {
-        console.log(JSON.stringify(res));
+
+      let getEventLog = this.ajax.get('event-logs/').then(res => {
+        this.logData = this.logData.concat(res.data);
+      });
+
+      let getRank = this.ajax.get('users/rankings/').then(res => {
+        this.rankData = res.data;
+      });
+
+      Promise.all([getActivityLog, getEventLog]).then(() => {
+        this.logData.sort(function(left, right) : number {
+          return moment(left['datetime']).diff(moment(right['datetime']));
+        });
+        
+        let data = {
+          labels: this.getDates(),
+          datasets: [{
+            label: 'Number of Logs',
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            data : this.getData()
+          }
+          ]
+        };
+        
+        let ctx = this.overallData.nativeElement.getContext('2d');
+        let overalldataChart = new Chart(ctx, {
+          type: 'line',
+          data : data,
+          options: {
+
+          }
+        });
       });
     });
-    let ctx = this.overallData.nativeElement.getContext('2d');
-    let overalldataChart = new Chart(ctx, {
-      type: 'line',
-      data: this.userData
-    })
   }
+
+  getDates() : Array<String> {
+    let data = [];
+    for(let x in this.logData) {
+      let date = moment(this.logData[x]['datetime']).format('MMMM');
+      if(!data.includes(date)) {
+        data.push(date);
+      }
+    }
+
+    console.log(JSON.stringify(data));
+    return data;
+  }
+
+  getData() : Array<number> {
+    let data = [];
+    let count = 0;
+    let date = moment(this.logData[0]['datetime']).format('MMMM');
+    for(let x in this.logData) {
+      let tempDate = moment(this.logData[x]['datetime']).format('MMMM');
+      if(tempDate === date) {
+        count++;
+      } else {
+        date = tempDate;
+        data.push(count);
+        count = 0;
+      }
+    }
+    data.push(count);
+    console.log(data);
+    return data;
+  }
+
 }
