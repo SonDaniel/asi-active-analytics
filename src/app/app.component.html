@@ -1,3 +1,31 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container py-2">
+  <div class="row">
+
+    <div class="col">
+      <div class="card card-inverse card-primary text-center" stlye="width: 20rem;">
+        <div class="card-block">
+          <span class="card-title" style="font-size: 2rem">
+            <span style="font-weight: 200">Total Users:</span> {{userCount}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card card-inverse card-success text-center" stlye="width: 20rem;">
+        <div class="card-block">
+          <span class="card-title" style="font-size: 2rem">
+            <span style="font-weight: 200">Total Feedback:</span> {{feedbackCount}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row py-3">
+    <div class="col">
+      <app-graph [graphIdentifier]="firstGraph"></app-graph>
+    </div>
+  </div>
+</div>
