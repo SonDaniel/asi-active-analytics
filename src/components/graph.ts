@@ -13,10 +13,11 @@ import { AjaxService } from '../services/ajax.service';
   `,
 })
 export class Graph {
-    @Input() graphIdentifier : string;
+    @Input() userData : any;
     @ViewChild('graph') graph: ElementRef;
 
     ngOnInit() {
+        console.log(this.userData);
     let firstChartCtx = this.graph.nativeElement.getContext('2d');
     let data = {
       labels: [
