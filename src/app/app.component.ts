@@ -11,7 +11,7 @@ import * as moment from 'moment';
 })
 export class AppComponent {
   @ViewChild('overallData') overallData : ElementRef;
-
+  overalldataChart : Chart;
   // variables for frontend
   userCount: number;
   feedbackCount : number;
@@ -20,6 +20,11 @@ export class AppComponent {
   feedbackData : Array<Object>;
   logData : Array<Object> = [];
   rankData : Array<Object>;
+
+  monthData : Array<Object> = [];
+  totalLogs : number;
+
+  selected : any = -1;
 
   constructor(private ajax: AjaxService) {}
 
@@ -48,6 +53,8 @@ export class AppComponent {
       });
 
       Promise.all([getActivityLog, getEventLog]).then(() => {
+        this.totalLogs = this.logData.length;
+
         this.logData.sort(function(left, right) : number {
           return moment(left['datetime']).diff(moment(right['datetime']));
         });
@@ -69,12 +76,13 @@ export class AppComponent {
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointHoverBorderWidth: 2,
             data : this.getData()
-          }
-          ]
+          }]
         };
-        
+
+        this.combineData(data.labels, data.datasets[0].data);
+
         let ctx = this.overallData.nativeElement.getContext('2d');
-        let overalldataChart = new Chart(ctx, {
+        this.overalldataChart = new Chart(ctx, {
           type: 'line',
           data : data,
           options: {
@@ -93,12 +101,10 @@ export class AppComponent {
         data.push(date);
       }
     }
-
-    console.log(JSON.stringify(data));
     return data;
   }
 
-  getData() : Array<number> {
+  getData() : Array<Number> {
     let data = [];
     let count = 0;
     let date = moment(this.logData[0]['datetime']).format('MMMM');
@@ -113,8 +119,30 @@ export class AppComponent {
       }
     }
     data.push(count);
-    console.log(data);
     return data;
   }
 
+  combineData(labels : Array<String>, data : Array<Number>) {
+    for(let x in data) {
+      {
+        let object = {
+          month: labels[x],
+          data: data[x],
+          selected: false
+        }
+        this.monthData.push(object);
+      }
+    }
+  }
+
+  selectList(event, selected : any) {
+    event.preventDefault();
+    this.selected = selected;
+    console.log(JSON.stringify(selected));
+    
+  }
+
+  onHover(event) {
+    //TO DO: Show different Graph and activate
+  }
 }

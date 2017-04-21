@@ -1,41 +1,22 @@
 <div class="container py-2">
-  <div class="row">
-
-    <!--<div class="col">
-      <div class="card card-inverse card-primary text-center" stlye="width: 20rem;">
-        <div class="card-block">
-          <span class="card-title" style="font-size: 2rem">
-            <span style="font-weight: 200">Total Users:</span> {{userCount}}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="card card-inverse card-success text-center" stlye="width: 20rem;">
-        <div class="card-block">
-          <span class="card-title" style="font-size: 2rem">
-            <span style="font-weight: 200">Total Feedback:</span> {{feedbackCount}}
-          </span>
-        </div>
-      </div>
-    </div>-->
-
-  </div>
-
   <div class="row py-3">
-    <div class="col">
+    <div class="col-8">
       <!--<app-graph [userData]="userData"></app-graph>-->
-      <canvas #overallData height="auto" width="auto"></canvas>
+      <canvas #overallData></canvas>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <ul class="list-group">
-        <li class="list-group-item">
-          List something here
-        </li>
-      </ul>
+    <div class="col" style="align-self: center">
+      <div class="list-group">
+
+        <a href="#" on-mouseover="onHover($event)" (click)="selectList($event, -1)" class="list-group-item list-group-item-action justify-content-between" [class.active]="selected == -1">
+          Overall Log Statistics
+          <span class="badge badge-default badge-pill">{{totalLogs}}</span>
+        </a>
+
+        <a href="#" *ngFor="let obj of monthData" (click)="selectList($event, obj)" on-mouseover="onHover($event)" class="list-group-item list-group-item-action justify-content-between" [class.active]="obj === selected" >
+          {{obj.month}} Log Statistics
+          <span class="badge badge-default badge-pill">{{obj.data}}</span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

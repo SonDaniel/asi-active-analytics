@@ -12,8 +12,8 @@ import 'rxjs/add/operator/switchMap';
 
 @Injectable()
 export class AjaxService {
-	private USERNAME : string = 'AdminDaniel';
-	private PASSWORD : string = '';
+	private USERNAME : string = 'AdminApp'; //TO DO: Figure out how to hide Admin Credentials
+	private PASSWORD : string = 'thereisnospoon'; //TO DO: Figure out how to hide Admin Credentials
 	private JWT : string = '';
 
 	private apiUrl = 'http://127.0.0.1:8000/api/';
