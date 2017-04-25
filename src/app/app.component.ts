@@ -58,9 +58,11 @@ export class AppComponent {
         this.logData.sort(function(left, right) : number {
           return moment(left['datetime']).diff(moment(right['datetime']));
         });
+
+        let obj = this.getData('MMMM');
         
         let data = {
-          labels: this.getDates(),
+          labels: obj['dates'],
           datasets: [{
             label: 'Number of Logs',
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -75,13 +77,14 @@ export class AppComponent {
             pointHoverBackgroundColor: "rgba(75,192,192,1)",
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointHoverBorderWidth: 2,
-            data : this.getData()
+            data : obj['data']
           }]
         };
 
-        this.combineData(data.labels, data.datasets[0].data);
+        this.monthData = this.combineData(data.labels, data.datasets[0].data);
 
         let ctx = this.overallData.nativeElement.getContext('2d');
+
         this.overalldataChart = new Chart(ctx, {
           type: 'line',
           data : data,
@@ -93,56 +96,69 @@ export class AppComponent {
     });
   }
 
-  getDates() : Array<String> {
+  getData(format: string, start: any = null, end: any = null) : Object {
+    let dates = [];
     let data = [];
-    for(let x in this.logData) {
-      let date = moment(this.logData[x]['datetime']).format('MMMM');
-      if(!data.includes(date)) {
-        data.push(date);
-      }
-    }
-    return data;
-  }
 
-  getData() : Array<Number> {
-    let data = [];
+    if(!start) {
+      start = moment(this.logData[0]['datetime']);
+    }
+
+    if(!end) {
+      end = moment(this.logData[this.logData.length - 1]['datetime']);
+    }
+
+    let dateComparable = start.format(format);
     let count = 0;
-    let date = moment(this.logData[0]['datetime']).format('MMMM');
+
     for(let x in this.logData) {
-      let tempDate = moment(this.logData[x]['datetime']).format('MMMM');
-      if(tempDate === date) {
-        count++;
-      } else {
-        date = tempDate;
-        data.push(count);
-        count = 0;
+      let date = moment(this.logData[x]['datetime']);
+
+      if(start.diff(date) <= 0 && end.diff(date) >= 0) {
+
+        if(!dates.includes(date.format(format))) {
+          dates.push(date.format(format));
+        }
+
+        if(dateComparable === date.format(format)) {
+          count++;
+        } else {
+          dateComparable = date.format(format);
+          data.push(count);
+          count = 0;
+        }
       }
     }
+
     data.push(count);
-    return data;
+
+    return {
+      'dates' : dates,
+      'data' : data
+    }
   }
 
-  combineData(labels : Array<String>, data : Array<Number>) {
-    for(let x in data) {
-      {
-        let object = {
-          month: labels[x],
-          data: data[x],
-          selected: false
-        }
-        this.monthData.push(object);
+  combineData(labels : Array<String>, data : Array<Number>) : Array<Object> {
+    return data.map((x, i) => {
+      return {
+        'date': labels[i],
+        'data': x
       }
-    }
+    });
   }
 
   selectList(event, selected : any) {
     event.preventDefault();
     this.selected = selected;
     console.log(JSON.stringify(selected));
-    
+    console.log(JSON.stringify(this.logData));
+
+    let data = this.getData('DD', moment('2016-01-01'), moment('2017-02-01'));
+    console.log(JSON.stringify(data));
   }
 
   onHover(event) {
     //TO DO: Show different Graph and activate
   }
+
 }

@@ -13,7 +13,7 @@
         </a>
 
         <a href="#" *ngFor="let obj of monthData" (click)="selectList($event, obj)" on-mouseover="onHover($event)" class="list-group-item list-group-item-action justify-content-between" [class.active]="obj === selected" >
-          {{obj.month}} Log Statistics
+          {{obj.date}} Log Statistics
           <span class="badge badge-default badge-pill">{{obj.data}}</span>
         </a>
       </div>
