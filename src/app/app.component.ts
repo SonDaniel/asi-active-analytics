@@ -77,7 +77,7 @@ export class AppComponent {
             pointHoverBackgroundColor: "rgba(75,192,192,1)",
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointHoverBorderWidth: 2,
-            data : obj['data']
+            data : obj['data'].map((a) => {return a.count})
           }]
         };
 
@@ -102,35 +102,47 @@ export class AppComponent {
 
     if(!start) {
       start = moment(this.logData[0]['datetime']);
+    } else {
+      start = moment(start);
     }
 
     if(!end) {
       end = moment(this.logData[this.logData.length - 1]['datetime']);
+    } else {
+      end = moment(end);
     }
 
     let dateComparable = start.format(format);
-    let count = 0;
-
+    let dataObject = {
+      count : 0,
+      start: null,
+      end: null
+    }
     for(let x in this.logData) {
       let date = moment(this.logData[x]['datetime']);
 
       if(start.diff(date) <= 0 && end.diff(date) >= 0) {
-
         if(!dates.includes(date.format(format))) {
           dates.push(date.format(format));
         }
 
         if(dateComparable === date.format(format)) {
-          count++;
+          dataObject.count++;
         } else {
           dateComparable = date.format(format);
-          data.push(count);
-          count = 0;
+          dataObject.end = date;
+          data.push(dataObject);
+          
+          dataObject = {
+            count : 1,
+            start: date,
+            end: null
+          };
         }
       }
     }
 
-    data.push(count);
+    data.push(dataObject);
 
     return {
       'dates' : dates,
@@ -151,10 +163,10 @@ export class AppComponent {
     event.preventDefault();
     this.selected = selected;
     console.log(JSON.stringify(selected));
-    console.log(JSON.stringify(this.logData));
 
-    let data = this.getData('DD', moment('2016-01-01'), moment('2017-02-01'));
+    let data = this.getData('M-DD', selected.data.start, selected.data.end);
     console.log(JSON.stringify(data));
+    // this.overalldataChart.datasets[0].data = 
   }
 
   onHover(event) {
