@@ -140,9 +140,8 @@ export class LogDataComponent implements OnInit {
   selectList(event, selected : any) {
     event.preventDefault();
     this.selected = selected;
-    console.log(JSON.stringify(selected));
     var dateSet = new Set();
-    console.log(dateSet);
+
     if(this.selected != -1) {
       for(let x of this.logData) {
         let date = moment(x['datetime']);
@@ -150,10 +149,10 @@ export class LogDataComponent implements OnInit {
           dateSet.add(date.format('MM-DD'));
         }
       }
-
       let dataArray = Array.from(dateSet);
       this.overalldataChart.data.labels = dataArray;
       this.overalldataChart.data.datasets[0].data = this.countData('MM-DD', `2017-${dataArray[0]}`, `2017-${dataArray[dataArray.length -1]}`);
+      console.log(this.overalldataChart.data.labels);
       console.log(this.overalldataChart.data.datasets[0].data);
     } else {
         for(let x of this.logData) {
@@ -161,6 +160,7 @@ export class LogDataComponent implements OnInit {
         }
         this.overalldataChart.data.labels = Array.from(dateSet);
         this.overalldataChart.data.datasets[0].data = this.countData('MMMM');
+        console.log(this.overalldataChart.data.labels);
         console.log(this.overalldataChart.data.datasets[0].data);
     }
 
