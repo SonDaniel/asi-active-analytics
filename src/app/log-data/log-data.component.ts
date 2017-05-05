@@ -21,11 +21,14 @@ export class LogDataComponent implements OnInit {
   feedbackData : Array<Object>;
   logData : Array<Object> = [];
   rankData : Array<Object>;
+  selectedData : Array<Object>;
 
   monthData : Array<Object> = [];
   totalLogs : number;
 
   selected : any = -1;
+
+  showList : boolean = true;
 
   constructor(private ajax: AjaxService) {}
 
@@ -92,6 +95,7 @@ export class LogDataComponent implements OnInit {
   }
 
   countData(format: string, start: any = null, end: any = null, dataMap: Map<string, number>) : Map<string, number> {
+    this.selectedData = [];
     if(!start) {
       start = moment(this.logData[0]['datetime']).format('YYYY-MM-DD');
     } else {
@@ -104,10 +108,11 @@ export class LogDataComponent implements OnInit {
       end = moment(end).add(1, 'days').format('YYYY-MM-DD');
     }
 
-    for(let x in this.logData) {
-      let date = moment(this.logData[x]['datetime']);
+    for(let x of this.logData) {
+      let date = moment(x['datetime']);
       if(date.isBetween(start, end, null , '[]') && dataMap.has(date.format(format))) {
           dataMap.set(date.format(format), dataMap.get(date.format(format)) + 1);
+          this.selectedData.push(x);
       }
     }
     return dataMap;
@@ -158,5 +163,9 @@ export class LogDataComponent implements OnInit {
 
   onHover(event) {
     //TO DO: Show different Graph and activate
+  }
+
+  formatDate(date : string) : string {
+    return moment(date).format('LLL');
   }
 }
