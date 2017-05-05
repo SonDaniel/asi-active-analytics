@@ -12,15 +12,9 @@ import * as moment from 'moment';
 export class LogDataComponent implements OnInit {
   @ViewChild('overallData') overallData : ElementRef;
   overalldataChart : Chart;
-  
-  // variables for frontend
-  userCount: number;
-  feedbackCount : number;
 
-  userData : Array<Object>;
-  feedbackData : Array<Object>;
+  categoryMap = new Map();
   logData : Array<Object> = [];
-  rankData : Array<Object>;
   selectedData : Array<Object>;
 
   monthData : Array<Object> = [];
@@ -33,17 +27,21 @@ export class LogDataComponent implements OnInit {
   constructor(private ajax: AjaxService) {}
 
   ngOnInit() {
-    this.ajax.init().then(() => {
+    this.ajax.check().then(() => {
       let getActivityLog = this.ajax.get('activity-logs/').then(res => {
         this.logData = this.logData.concat(res.data);
+        console.log(JSON.stringify(res.data));
       });
 
       let getEventLog = this.ajax.get('event-logs/').then(res => {
         this.logData = this.logData.concat(res.data);
       });
 
-      let getRank = this.ajax.get('users/rankings/').then(res => {
-        this.rankData = res.data;
+      let getCategoryLog = this.ajax.get('categories/').then(res => {
+        for(let x of res.data) {
+          this.categoryMap.set(x.id, x.name);
+        }
+        console.log(this.categoryMap);
       });
 
       Promise.all([getActivityLog, getEventLog]).then(() => {

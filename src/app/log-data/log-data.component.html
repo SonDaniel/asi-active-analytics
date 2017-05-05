@@ -37,20 +37,12 @@
         <tbody *ngIf="showList">
           <tr *ngFor="let log of selectedData; let i = index">
             <th scope="row">{{i+1}}</th>
-            <td>{{log.category_id}}</td>
+            <td>{{categoryMap.get(log.category_id)}}</td>
             <td>{{log.profile_id}}</td>
             <td>{{formatDate(log.datetime)}}</td>
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-  <div class="row py-3">
-    <div class="col">
-    </div>
-    <div class="col">
-    </div>
-    <div class="col">
     </div>
   </div>
 </div>
