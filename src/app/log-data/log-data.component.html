@@ -6,7 +6,6 @@
   </div>
   <div class="row py-3">
     <div class="col-8">
-      <!--<app-graph [userData]="userData"></app-graph>-->
       <canvas #overallData></canvas>
     </div>
     <div class="col" style="align-self: center">
@@ -26,11 +25,32 @@
   </div>
   <div class="row py-3">
     <div class="col">
-      <div class="list-group">
-        <div class="d-flex w-100 justify-content-between" *ngFor="let log of logData">
-          test
-        </div>
-      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Category</th>
+            <th>Student</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="showList">
+          <tr *ngFor="let log of selectedData; let i = index">
+            <th scope="row">{{i+1}}</th>
+            <td>{{log.category_id}}</td>
+            <td>{{log.profile_id}}</td>
+            <td>{{formatDate(log.datetime)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row py-3">
+    <div class="col">
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
     </div>
   </div>
 </div>
