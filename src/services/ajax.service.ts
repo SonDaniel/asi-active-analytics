@@ -35,6 +35,14 @@ export class AjaxService {
 		});
 	}
 
+	check() : Promise<any> {
+		if(!this.JWT) { 
+			return this.init();
+		} else {
+			return Promise.resolve();
+		}
+	}
+
 	/**
 	 * Performs a GET Http request.
 	 * @param {string} url - API URL

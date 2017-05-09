@@ -12,15 +12,8 @@ import * as moment from 'moment';
 export class LogDataComponent implements OnInit {
   @ViewChild('overallData') overallData : ElementRef;
   overalldataChart : Chart;
-  
-  // variables for frontend
-  userCount: number;
-  feedbackCount : number;
 
-  userData : Array<Object>;
-  feedbackData : Array<Object>;
   logData : Array<Object> = [];
-  rankData : Array<Object>;
   selectedData : Array<Object>;
 
   monthData : Array<Object> = [];
@@ -33,17 +26,13 @@ export class LogDataComponent implements OnInit {
   constructor(private ajax: AjaxService) {}
 
   ngOnInit() {
-    this.ajax.init().then(() => {
+    this.ajax.check().then(() => {
       let getActivityLog = this.ajax.get('activity-logs/').then(res => {
         this.logData = this.logData.concat(res.data);
       });
 
       let getEventLog = this.ajax.get('event-logs/').then(res => {
         this.logData = this.logData.concat(res.data);
-      });
-
-      let getRank = this.ajax.get('users/rankings/').then(res => {
-        this.rankData = res.data;
       });
 
       Promise.all([getActivityLog, getEventLog]).then(() => {
@@ -127,15 +116,14 @@ export class LogDataComponent implements OnInit {
     });
   }
 
-  selectList(event, selected : any) {
-    event.preventDefault();
-    this.selected = selected;
+  selectList(obj) {
+    this.selected = obj;
     var dataMap = new Map();
 
     if(this.selected != -1) {
       for(let x of this.logData) {
         let date = moment(x['datetime']);
-        if(date.format('MMMM') === selected['date']) {
+        if(date.format('MMMM') === obj['date']) {
           dataMap.set(date.format('MM-DD'), 0);
         }
       }
