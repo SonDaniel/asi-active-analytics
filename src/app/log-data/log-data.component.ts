@@ -13,7 +13,6 @@ export class LogDataComponent implements OnInit {
   @ViewChild('overallData') overallData : ElementRef;
   overalldataChart : Chart;
 
-  categoryMap = new Map();
   logData : Array<Object> = [];
   selectedData : Array<Object>;
 
@@ -30,18 +29,10 @@ export class LogDataComponent implements OnInit {
     this.ajax.check().then(() => {
       let getActivityLog = this.ajax.get('activity-logs/').then(res => {
         this.logData = this.logData.concat(res.data);
-        console.log(JSON.stringify(res.data));
       });
 
       let getEventLog = this.ajax.get('event-logs/').then(res => {
         this.logData = this.logData.concat(res.data);
-      });
-
-      let getCategoryLog = this.ajax.get('categories/').then(res => {
-        for(let x of res.data) {
-          this.categoryMap.set(x.id, x.name);
-        }
-        console.log(this.categoryMap);
       });
 
       Promise.all([getActivityLog, getEventLog]).then(() => {
@@ -125,15 +116,14 @@ export class LogDataComponent implements OnInit {
     });
   }
 
-  selectList(event, selected : any) {
-    event.preventDefault();
-    this.selected = selected;
+  selectList(obj) {
+    this.selected = obj;
     var dataMap = new Map();
 
     if(this.selected != -1) {
       for(let x of this.logData) {
         let date = moment(x['datetime']);
-        if(date.format('MMMM') === selected['date']) {
+        if(date.format('MMMM') === obj['date']) {
           dataMap.set(date.format('MM-DD'), 0);
         }
       }

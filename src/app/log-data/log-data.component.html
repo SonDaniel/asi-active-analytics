@@ -5,44 +5,36 @@
     </div>
   </div>
   <div class="row py-3">
-    <div class="col-8">
-      <canvas #overallData></canvas>
-    </div>
-    <div class="col" style="align-self: center">
-      <div class="list-group">
-
-        <a href="#" on-mouseover="onHover($event)" (click)="selectList($event, -1)" class="list-group-item list-group-item-action justify-content-between" [class.active]="selected == -1">
-          Overall Log Statistics
-          <span class="badge badge-default badge-pill">{{totalLogs}}</span>
-        </a>
-
-        <a href="#" *ngFor="let obj of monthData" (click)="selectList($event, obj)" on-mouseover="onHover($event)" class="list-group-item list-group-item-action justify-content-between" [class.active]="obj === selected" >
-          {{obj.date}} Log Statistics
-          <span class="badge badge-default badge-pill">{{obj.data}}</span>
-        </a>
-      </div>
-    </div>
+    <select class="custom-select" [ngModel]="selected" (ngModelChange)="selectList($event)">
+      <option [ngValue]="-1" selected>Overall Log Statistics</option>
+      <option [ngValue]="obj" (click)="selectList($event, obj)" *ngFor="let obj of monthData">{{obj.date}} Log Statistics</option>
+    </select>
   </div>
   <div class="row py-3">
     <div class="col">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Category</th>
-            <th>Student</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="showList">
-          <tr *ngFor="let log of selectedData; let i = index">
-            <th scope="row">{{i+1}}</th>
-            <td>{{categoryMap.get(log.category_id)}}</td>
-            <td>{{log.profile_id}}</td>
-            <td>{{formatDate(log.datetime)}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <canvas #overallData></canvas>
     </div>
+  </div>
+  <div class="row py-3">
+    <div class="col"> 
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category</th>
+              <th>Student</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="showList">
+            <tr *ngFor="let log of selectedData; let i = index">
+              <th scope="row">{{i+1}}</th>
+              <td>{{log.log_name}}</td>
+              <td>{{log.profile_name}}</td>
+              <td>{{formatDate(log.datetime)}}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div> <!-- end of col -->
   </div>
 </div>
