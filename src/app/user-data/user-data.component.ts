@@ -13,9 +13,13 @@ export class UserDataComponent implements OnInit {
   constructor(private ajax: AjaxService) { }
 
   ngOnInit() {
-    let getUser = this.ajax.get('users/').then(res => {
-      this.userData = res.data;
-      this.userCount = res.data.length;
+    this.ajax.check().then(() => {
+      return this.ajax.get('users/').then(res => {
+        this.userData = res.data;
+        this.userCount = res.data.length;
+        console.log(JSON.stringify(this.userData));
+
+      });
     });
   }
 

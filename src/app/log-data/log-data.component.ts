@@ -11,7 +11,12 @@ import * as moment from 'moment';
 })
 export class LogDataComponent implements OnInit {
   @ViewChild('overallData') overallData : ElementRef;
-  overalldataChart : Chart;
+  @ViewChild('timeData') timeData : ElementRef;
+  @ViewChild('categoryData') categoryData : ElementRef;
+
+  overallDataChart : Chart;
+  // timedataChart : Chart;
+  // categoryDataChart: Chart;
 
   logData : Array<Object> = [];
   selectedData : Array<Object>;
@@ -43,6 +48,7 @@ export class LogDataComponent implements OnInit {
         });
 
         let dataMap = new Map();
+
         // Extract datetime for LogData
         for(let x of this.logData) {
           dataMap.set(moment(x['datetime']).format('MMMM'), 0);
@@ -72,12 +78,9 @@ export class LogDataComponent implements OnInit {
 
         let ctx = this.overallData.nativeElement.getContext('2d');
 
-        this.overalldataChart = new Chart(ctx, {
+        this.overallDataChart = new Chart(ctx, {
           type: 'line',
-          data : data,
-          options: {
-
-          }
+          data : data
         });
       });
     });
@@ -132,21 +135,21 @@ export class LogDataComponent implements OnInit {
 
       dataMap = this.countData('MM-DD', `2017-${dateArray[0]}`, `2017-${dateArray[dateArray.length -1]}`, dataMap);
 
-      this.overalldataChart.data.labels = dateArray;
+      this.overallDataChart.data.labels = dateArray;
 
-      this.overalldataChart.data.datasets[0].data = Array.from(dataMap.values());
+      this.overallDataChart.data.datasets[0].data = Array.from(dataMap.values());
     } else {
         for(let x of this.logData) {
           dataMap.set(moment(x['datetime']).format('MMMM'), 0);
         }
 
         dataMap = this.countData('MMMM', null, null, dataMap);
-        this.overalldataChart.data.labels = Array.from(dataMap.keys());
+        this.overallDataChart.data.labels = Array.from(dataMap.keys());
 
-        this.overalldataChart.data.datasets[0].data = Array.from(dataMap.values());
+        this.overallDataChart.data.datasets[0].data = Array.from(dataMap.values());
     }
 
-    this.overalldataChart.update();
+    this.overallDataChart.update();
   }
 
   onHover(event) {
