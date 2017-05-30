@@ -1,5 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Chart } from 'chart.js';
+
 import { AjaxService } from '../../services/ajax.service';
 
 import * as moment from 'moment';
@@ -11,8 +13,8 @@ import * as moment from 'moment';
 })
 export class LogDataComponent implements OnInit {
   @ViewChild('overallData') overallData : ElementRef;
-  @ViewChild('timeData') timeData : ElementRef;
-  @ViewChild('categoryData') categoryData : ElementRef;
+  // @ViewChild('timeData') timeData : ElementRef;
+  // @ViewChild('categoryData') categoryData : ElementRef;
 
   overallDataChart : Chart;
   // timedataChart : Chart;
@@ -28,19 +30,11 @@ export class LogDataComponent implements OnInit {
 
   showList : boolean = true;
 
-  constructor(private ajax: AjaxService) {}
+  constructor(private ajax: AjaxService, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.ajax.check().then(() => {
-      let getActivityLog = this.ajax.get('activity-logs/').then(res => {
-        this.logData = this.logData.concat(res.data);
-      });
-
-      let getEventLog = this.ajax.get('event-logs/').then(res => {
-        this.logData = this.logData.concat(res.data);
-      });
-
-      Promise.all([getActivityLog, getEventLog]).then(() => {
+    this.route.data.subscribe((dataSet: {logData : any}) => {
+        this.logData = dataSet.logData;
         this.totalLogs = this.logData.length;
 
         this.logData.sort(function(left, right) : number {
@@ -62,7 +56,6 @@ export class LogDataComponent implements OnInit {
             backgroundColor: "rgba(75,192,192,0.4)",
             borderColor: "rgba(75,192,192,1)",
             borderCapStyle: 'butt',
-            borderDash: [],
             borderDashOffset: 0.0,
             borderJoinStyle: 'miter',
             pointBackgroundColor: "#fff",
@@ -82,7 +75,6 @@ export class LogDataComponent implements OnInit {
           type: 'line',
           data : data
         });
-      });
     });
   }
 

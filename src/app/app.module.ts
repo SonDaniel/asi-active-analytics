@@ -3,7 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+
 import { AjaxService } from '../services/ajax.service';
+import { UserDataResolve } from '../services/user-data-resolver.service';
+import { LogDataResolve } from '../services/log-data-resolver.service';
+
 import { Graph } from '../components/graph';
 import { AppComponent } from './app.component';
 import { LogDataComponent } from './log-data/log-data.component';
@@ -14,8 +18,20 @@ import { SidebarMenuComponent } from './sidebar-menu/sidebar-menu.component';
 import { ChartComponent } from './chart/chart.component';
 
 const appRoutes : Routes = [
-  {path: 'log-data', component: LogDataComponent},
-  {path: 'user-data', component: UserDataComponent},
+  {
+    path: 'log-data', 
+    component: LogDataComponent,
+    resolve: {
+      logData: LogDataResolve
+    }
+  },
+  {
+    path: 'user-data', 
+    component: UserDataComponent,
+    resolve: {
+      userData: UserDataResolve
+    }
+  },
   {path: 'feedback', component: FeedbackComponent},
   {path: 'home', component: HomeComponent},
   {path: '', redirectTo:'/home', pathMatch:'full'},
@@ -40,7 +56,9 @@ const appRoutes : Routes = [
     HttpModule
   ],
   providers: [
-    AjaxService
+    AjaxService,
+    UserDataResolve,
+    LogDataResolve
   ],
   bootstrap: [AppComponent]
 })
