@@ -1,3 +1,25 @@
-<p>
-  user-data works!
-</p>
+<div class="container-fluid py-2">
+  <div class="row py-3">
+    <div class="col">
+      <div class="card card-outline-primary mb-3 text-center">
+        <div class="card-block">
+          <h2>User Total: {{userData.length}}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row py-1" *ngFor="let userObj of userData">
+    <div class="col">
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">{{userObj.user.first_name}} {{userObj.user.last_name}}</h4>
+          <h6 class="card-subtitle mb-2 text-muted">Username: {{userObj.user.username}}</h6>
+          <p class="card-text">
+            <strong>Activity Logs:</strong> {{userObj.categories.length}} Logs<br/>
+            <strong>Event Logs:</strong> {{userObj.events.length}} logs
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

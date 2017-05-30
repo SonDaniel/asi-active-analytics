@@ -11,6 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { UserDataComponent } from './user-data/user-data.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { SidebarMenuComponent } from './sidebar-menu/sidebar-menu.component';
+import { ChartComponent } from './chart/chart.component';
 
 const appRoutes : Routes = [
   {path: 'log-data', component: LogDataComponent},
@@ -29,7 +30,8 @@ const appRoutes : Routes = [
     HomeComponent,
     UserDataComponent,
     FeedbackComponent,
-    SidebarMenuComponent
+    SidebarMenuComponent,
+    ChartComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
