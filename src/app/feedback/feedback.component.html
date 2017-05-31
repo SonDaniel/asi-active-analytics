@@ -1,3 +1,14 @@
-<p>
-  feedback works!
-</p>
+<div class="container-fluid py-2">
+  <div class="row py-1" *ngFor="let feedback of feedbackData">
+    <div class="col">
+      <div class="card">
+        <div class="card-block">
+          <blockquote class="blockquote">
+            <p class="mb-0">{{feedback.message}}</p>
+            <footer class="blockquote-footer">{{feedback.profile_name}} on {{getDate(feedback.datetime)}}</footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -16,6 +16,7 @@ export class UserDataComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe((data: {userData : any}) => {
       this.userData = data.userData;
+      console.log(JSON.stringify(this.userData));
     });
   }
 

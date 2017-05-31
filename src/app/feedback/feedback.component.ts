@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AjaxService } from '../../services/ajax.service';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-feedback',
   templateUrl: './feedback.component.html',
@@ -14,10 +16,16 @@ export class FeedbackComponent implements OnInit {
   constructor(private ajax: AjaxService) { }
 
   ngOnInit() {
+    this.ajax.check().then(() => {
       let getFeedback = this.ajax.get('feedback/').then(res => {
         this.feedbackData = res.data;
-        this.feedbackCount = res.data.length;
+        console.log(JSON.stringify(this.feedbackData));
       });
+    });
+  }
+
+  getDate(date: string) : string {
+    return moment(date).format('L');
   }
 
 }
