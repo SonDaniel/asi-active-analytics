@@ -26,6 +26,7 @@ export class LogDataComponent implements OnInit {
   monthData : Array<Object> = [];
   totalLogs : number;
 
+  //selected is defaulted to -1 to show overall log data
   selected : any = -1;
 
   showList : boolean = true;
