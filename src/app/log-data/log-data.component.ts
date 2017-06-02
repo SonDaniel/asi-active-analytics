@@ -13,13 +13,13 @@ import * as moment from 'moment';
 })
 export class LogDataComponent implements OnInit {
   @ViewChild('overallData') overallData : ElementRef;
-  // @ViewChild('timeData') timeData : ElementRef;
-  // @ViewChild('categoryData') categoryData : ElementRef;
+  @ViewChild('timeData') timeData : ElementRef;
+  @ViewChild('categoryData') categoryData : ElementRef;
 
   overallDataChart : Chart;
-  // timedataChart : Chart;
-  // categoryDataChart: Chart;
-
+  timedataChart : Chart;
+  categoryDataChart: Chart;
+  
   logData : Array<Object> = [];
   selectedData : Array<Object>;
 
@@ -42,16 +42,39 @@ export class LogDataComponent implements OnInit {
           return moment(left['datetime']).diff(moment(right['datetime']));
         });
 
-        let dataMap = new Map();
+        let overallDataMap = new Map();
+        let timeDataMap = new Map();
+        let categoryDataMap = new Map();
 
         // Extract datetime for LogData
         for(let x of this.logData) {
-          dataMap.set(moment(x['datetime']).format('MMMM'), 0);
-        }
-        dataMap = this.countData('MMMM', null, null, dataMap);
+          if(overallDataMap.has(moment(x['datetime']).format('MMMM'))) {
+            overallDataMap.set(moment(x['datetime']).format('MMMM') , overallDataMap.get(moment(x['datetime']).format('MMMM')) + 1);
+          } else {
+            overallDataMap.set(moment(x['datetime']).format('MMMM'), 1);
+          }          
+          
+          if(timeDataMap.has(x['profile_name'])) {
+            timeDataMap.set(x['profile_name'], timeDataMap.get(x['profile_name']) + 1);
+          } else {
+            timeDataMap.set(x['profile_name'], 1);
+          }
 
-        let data = {
-          labels: Array.from(dataMap.keys()),
+          if(categoryDataMap.has(x['log_name'])) {
+            categoryDataMap.set(x['log_name'], categoryDataMap.get(x['log_name']) + 1);
+          } else {
+            categoryDataMap.set(x['log_name'], 1);
+          }
+        }
+
+        // overallDataMap = new Map([...overallDataMap.entries()].sort());
+        
+
+        console.log(overallDataMap);
+        console.log(timeDataMap);
+        console.log(categoryDataMap);
+        let overallData = {
+          labels: Array.from(overallDataMap.keys()),
           datasets: [{
             label: 'Number of Logs',
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -65,17 +88,46 @@ export class LogDataComponent implements OnInit {
             pointHoverBackgroundColor: "rgba(75,192,192,1)",
             pointHoverBorderColor: "rgba(220,220,220,1)",
             pointHoverBorderWidth: 2,
-            data : Array.from(dataMap.values())
+            data : Array.from(overallDataMap.values())
           }]
         };
-        this.monthData = this.combineData(data.labels, data.datasets[0].data);
+        
+        let timeData = {
+          labels: Array.from(timeDataMap.keys()),
+          datasets: [{
+            label: 'Number of User Logs',
+            data: Array.from(timeDataMap.values())
+          }]
+        };
 
-        let ctx = this.overallData.nativeElement.getContext('2d');
+        let categoryData = {
+          labels: Array.from(categoryDataMap.keys()),
+          datasets: [{
+            label: 'Trending Categories',
+            data: Array.from(categoryDataMap.values())
+          }]
+        };
 
-        this.overallDataChart = new Chart(ctx, {
+        this.monthData = this.combineData(overallData.labels, overallData.datasets[0].data);
+
+        let overallDataCtx = this.overallData.nativeElement.getContext('2d');
+        let timeDataCtx = this.timeData.nativeElement.getContext('2d');
+        let categoryDataCtx = this.categoryData.nativeElement.getContext('2d');
+
+        this.overallDataChart = new Chart(overallDataCtx, {
           type: 'line',
-          data : data
+          data : overallData
         });
+
+        this.timedataChart = new Chart(timeDataCtx, {
+          type: 'pie',
+          data: timeData
+        });
+
+        this.categoryDataChart = new Chart(categoryDataCtx, {
+          type: 'pie',
+          data: categoryData
+        })
     });
   }
 

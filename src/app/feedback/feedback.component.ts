@@ -19,7 +19,6 @@ export class FeedbackComponent implements OnInit {
     this.ajax.check().then(() => {
       let getFeedback = this.ajax.get('feedback/').then(res => {
         this.feedbackData = res.data;
-        console.log(JSON.stringify(this.feedbackData));
       });
     });
   }
