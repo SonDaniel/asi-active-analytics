@@ -15,12 +15,13 @@
       </div>
     </div>
   </div>
-  <div class="row py-1" *ngFor="let userObj of userData">
-    <div class="col">
+  <div class="row py-1">
+    <div class="col-4  py-2 text-center" *ngFor="let userObj of userData">
       <div class="card">
         <div class="card-block">
           <h4 class="card-title">{{userObj.user.first_name}} {{userObj.user.last_name}}</h4>
-          <h6 class="card-subtitle mb-2 text-muted">Username: {{userObj.user.username}}</h6>
+          <h5 class="card-subtitle mb-2">Username: {{userObj.user.username}}</h5>
+          <span class="text-muted">({{userObj.id}})</span>
           <p class="card-text">
             <strong>Activity Logs:</strong> {{userObj.categories.length}} Logs<br/>
             <strong>Event Logs:</strong> {{userObj.events.length}} logs
