@@ -12,6 +12,7 @@ export class UserDataResolve implements Resolve<any> {
     resolve(route: ActivatedRouteSnapshot) : Promise<any> | boolean {
         return this.ajax.check().then(() => {
             return this.ajax.get('users/').then(res => {
+                console.log(JSON.stringify(res.data));
                 return res.data;
             });
         });

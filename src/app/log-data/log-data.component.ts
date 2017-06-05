@@ -4,6 +4,7 @@ import { Chart } from 'chart.js';
 
 import { AjaxService } from '../../services/ajax.service';
 
+import * as randomColor from 'randomcolor';
 import * as moment from 'moment';
 
 @Component({
@@ -42,6 +43,8 @@ export class LogDataComponent implements OnInit {
           return moment(left['datetime']).diff(moment(right['datetime']));
         });
 
+        this.selectedData = this.logData;
+
         let overallDataMap = new Map();
         let timeDataMap = new Map();
         let categoryDataMap = new Map();
@@ -67,12 +70,7 @@ export class LogDataComponent implements OnInit {
           }
         }
 
-        // overallDataMap = new Map([...overallDataMap.entries()].sort());
-        
 
-        console.log(overallDataMap);
-        console.log(timeDataMap);
-        console.log(categoryDataMap);
         let overallData = {
           labels: Array.from(overallDataMap.keys()),
           datasets: [{
@@ -91,11 +89,17 @@ export class LogDataComponent implements OnInit {
             data : Array.from(overallDataMap.values())
           }]
         };
-        
+
         let timeData = {
           labels: Array.from(timeDataMap.keys()),
           datasets: [{
             label: 'Number of User Logs',
+            backgroundColor: randomColor({
+              count: timeDataMap.size,
+              lumininosity: 'dark',
+            }),
+            borderColor: "#000",
+            borderWidth: 1,
             data: Array.from(timeDataMap.values())
           }]
         };
@@ -104,6 +108,12 @@ export class LogDataComponent implements OnInit {
           labels: Array.from(categoryDataMap.keys()),
           datasets: [{
             label: 'Trending Categories',
+            backgroundColor: randomColor({
+              count: categoryDataMap.size,
+              lumininosity: 'dark',
+            }),
+            borderColor: "#000",
+            borderWidth: 1,
             data: Array.from(categoryDataMap.values())
           }]
         };
@@ -120,12 +130,12 @@ export class LogDataComponent implements OnInit {
         });
 
         this.timedataChart = new Chart(timeDataCtx, {
-          type: 'pie',
+          type: 'horizontalBar',
           data: timeData
         });
 
         this.categoryDataChart = new Chart(categoryDataCtx, {
-          type: 'pie',
+          type: 'horizontalBar',
           data: categoryData
         })
     });
@@ -166,35 +176,79 @@ export class LogDataComponent implements OnInit {
 
   selectList(obj) {
     this.selected = obj;
-    var dataMap = new Map();
+    let overallDataMap = new Map();
+    let timeDataMap = new Map();
+    let categoryDataMap = new Map();
 
     if(this.selected != -1) {
       for(let x of this.logData) {
         let date = moment(x['datetime']);
         if(date.format('MMMM') === obj['date']) {
-          dataMap.set(date.format('MM-DD'), 0);
+          overallDataMap.set(date.format('MM-DD'), 0);
         }
       }
 
-      let dateArray = Array.from(dataMap.keys());
+      let dateArray = Array.from(overallDataMap.keys());
 
-      dataMap = this.countData('MM-DD', `2017-${dateArray[0]}`, `2017-${dateArray[dateArray.length -1]}`, dataMap);
+      overallDataMap = this.countData('MM-DD', `2017-${dateArray[0]}`, `2017-${dateArray[dateArray.length -1]}`, overallDataMap);
 
+      for(let x of this.selectedData) {
+          if(timeDataMap.has(x['profile_name'])) {
+            timeDataMap.set(x['profile_name'], timeDataMap.get(x['profile_name']) + 1);
+          } else {
+            timeDataMap.set(x['profile_name'], 1);
+          }
+
+          if(categoryDataMap.has(x['log_name'])) {
+            categoryDataMap.set(x['log_name'], categoryDataMap.get(x['log_name']) + 1);
+          } else {
+            categoryDataMap.set(x['log_name'], 1);
+          }
+      }
+      
       this.overallDataChart.data.labels = dateArray;
 
-      this.overallDataChart.data.datasets[0].data = Array.from(dataMap.values());
+      this.overallDataChart.data.datasets[0].data = Array.from(overallDataMap.values());
+
     } else {
+        // Extract datetime for LogData
         for(let x of this.logData) {
-          dataMap.set(moment(x['datetime']).format('MMMM'), 0);
+          if(overallDataMap.has(moment(x['datetime']).format('MMMM'))) {
+            overallDataMap.set(moment(x['datetime']).format('MMMM') , overallDataMap.get(moment(x['datetime']).format('MMMM')) + 1);
+          } else {
+            overallDataMap.set(moment(x['datetime']).format('MMMM'), 1);
+          }          
+          
+          if(timeDataMap.has(x['profile_name'])) {
+            timeDataMap.set(x['profile_name'], timeDataMap.get(x['profile_name']) + 1);
+          } else {
+            timeDataMap.set(x['profile_name'], 1);
+          }
+
+          if(categoryDataMap.has(x['log_name'])) {
+            categoryDataMap.set(x['log_name'], categoryDataMap.get(x['log_name']) + 1);
+          } else {
+            categoryDataMap.set(x['log_name'], 1);
+          }
         }
 
-        dataMap = this.countData('MMMM', null, null, dataMap);
-        this.overallDataChart.data.labels = Array.from(dataMap.keys());
+        this.overallDataChart.data.labels = Array.from(overallDataMap.keys());
 
-        this.overallDataChart.data.datasets[0].data = Array.from(dataMap.values());
+        this.overallDataChart.data.datasets[0].data = Array.from(overallDataMap.values());
+
+        this.selectedData = this.logData;
     }
+      this.timedataChart.data.labels = Array.from(timeDataMap.keys());
+      this.categoryDataChart.data.labels = Array.from(categoryDataMap.keys());
+
+      this.timedataChart.data.datasets[0].data = Array.from(timeDataMap.values());
+      this.categoryDataChart.data.datasets[0].data = Array.from(categoryDataMap.values());
 
     this.overallDataChart.update();
+    this.timedataChart.update();
+    this.categoryDataChart.update();
+
+    this.totalLogs = this.selectedData.length;
   }
 
   onHover(event) {
