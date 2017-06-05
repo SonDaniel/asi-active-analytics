@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+
 import { AjaxService } from '../../services/ajax.service';
 
 @Component({
@@ -8,18 +10,12 @@ import { AjaxService } from '../../services/ajax.service';
 })
 export class UserDataComponent implements OnInit {
   userData : any;
-  userCount : number;
   
-  constructor(private ajax: AjaxService) { }
+  constructor(private ajax: AjaxService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.ajax.check().then(() => {
-      return this.ajax.get('users/').then(res => {
-        this.userData = res.data;
-        this.userCount = res.data.length;
-        console.log(JSON.stringify(this.userData));
-
-      });
+    this.route.data.subscribe((data: {userData : any}) => {
+      this.userData = data.userData;
     });
   }
 

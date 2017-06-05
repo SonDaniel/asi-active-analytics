@@ -5,28 +5,29 @@
     </div>
   </div>
   <div class="row py-3">
-    <select class="custom-select" [ngModel]="selected" (ngModelChange)="selectList($event)">
-      <option [ngValue]="-1" selected>Overall Log Statistics</option>
-      <option [ngValue]="obj" (click)="selectList($event, obj)" *ngFor="let obj of monthData">{{obj.date}} Log Statistics</option>
-    </select>
+    <div class="col-4">
+      <select class="custom-select" [ngModel]="selected" (ngModelChange)="selectList($event)">
+        <option [ngValue]="-1" selected>Overall Log Statistics</option>
+        <option [ngValue]="obj" (click)="selectList(obj)" *ngFor="let obj of monthData">{{obj.date}} Log Statistics</option>
+      </select>
+    </div>
+    <div class="col-8">
+      <h4>
+        Total Logs: {{totalLogs}}
+      </h4>
+    </div>
   </div>
   <div class="row py-3">
     <div class="col-6">
       <canvas #overallData></canvas>
     </div>
     <div class="col-6">
-      <div class="row">
-        <div class="col">
-          <!--<canvas #timeData></canvas>-->
-          <app-chart name="test"></app-chart>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <!--<canvas #categoryData></canvas>-->
-          <app-chart name="tester"></app-chart>
-        </div>
-      </div>
+      <canvas #categoryData></canvas>
+    </div>
+  </div>
+  <div class="row py-3">
+    <div class="col">
+        <canvas #timeData></canvas>
     </div>
   </div>
   <div class="row py-3">
