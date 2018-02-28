@@ -17,8 +17,9 @@ export class FeedbackComponent implements OnInit {
 
   ngOnInit() {
     this.ajax.check().then(() => {
-      let getFeedback = this.ajax.get('feedback/').then(res => {
+      let getFeedback = this.ajax.get('api/feedback/').then(res => {
         this.feedbackData = res.data;
+        console.log(JSON.stringify(this.feedbackData));
       });
     });
   }

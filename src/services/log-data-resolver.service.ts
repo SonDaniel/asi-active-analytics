@@ -12,16 +12,8 @@ export class LogDataResolve implements Resolve<any> {
     resolve(route: ActivatedRouteSnapshot) : Promise<any> | boolean {
         let logData = [];
         return this.ajax.check().then(() => {
-            let getActivityLog = this.ajax.get('activity-logs/').then(res => {
-                logData = logData.concat(res.data);
-            });
-
-            let getEventLog = this.ajax.get('event-logs/').then(res => {
-                logData = logData.concat(res.data);
-            });
-
-            return Promise.all([getActivityLog, getEventLog]).then(() => {
-                return logData;
+            return this.ajax.get('wellness/logs/').then(res => {
+                return logData = res.data;
             });
         });
     }

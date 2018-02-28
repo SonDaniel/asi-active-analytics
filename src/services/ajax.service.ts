@@ -16,7 +16,7 @@ export class AjaxService {
 	private PASSWORD : string = 'thereisnospoon'; //TO DO: Figure out how to hide Admin Credentials
 	private JWT : string = '';
 
-	private apiUrl = 'http://127.0.0.1:8000/api/';
+	private apiUrl = 'http://127.0.0.1:8000/';
 	private headers = new Headers({ 'Content-Type': 'application/json' });
 
 	/**
@@ -27,7 +27,7 @@ export class AjaxService {
 	constructor(private http: Http) {}
 
 	init() : Promise<any> {
-		return this.request(RequestMethod.Post, `${this.apiUrl}get-token/`,{
+		return this.request(RequestMethod.Post, `${this.apiUrl}api/get-token/`,{
 			'username': this.USERNAME,
 			'password': this.PASSWORD
 		}).then(res => {
