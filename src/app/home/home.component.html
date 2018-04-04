@@ -1,3 +1,49 @@
-<p>
-  :) What a nice homepage I created here.
-</p>
+<div class="container-fluid py-2">
+  <div class="row" style="height: 90vh">
+    <div class="col-lg-5">
+      <div class="row" style="height: 45vh">
+        <div class="col">
+          <p>dept</p>
+          <div class="list-group" style="overflow-y: auto; height: 85%">
+            <li class="list-group-item" *ngFor="let data of departmentList">
+              {{data[0]}} - {{data[1]}} users
+            </li>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="height: 45vh">
+        <div class="col">
+          <p>badges</p>
+          <canvas #badgeChart></canvas>        
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="row" style="height: 45vh">
+        <div class="col">
+          <p>milestones</p>
+          <canvas #milestoneChart></canvas>        
+        </div>
+      </div>
+      <div class="row" style="height: 45vh">
+        <div class="col">
+          <p>users</p>
+          <h5>Total Users: {{numOfUsers}}</h5> 
+          <canvas #userChart></canvas>        
+        </div>
+      </div>
+    </div>
+    <!-- leader board -->
+    <div class="col-2">
+      <h2 class="text-center">Leaderboard</h2>
+      <div class="list-group" style="overflow-y: auto; height: 90vh">
+        <li class="list-group-item list-group-item-action flex-column align-items-start" *ngFor="let rank of rankList">
+          #{{ rank.rank }} {{ rank.name }} <br/>
+          {{rank.dept}} <br/>
+          points: {{rank.points}}
+        </li>
+      </div>
+    </div>
+  </div>
+</div>

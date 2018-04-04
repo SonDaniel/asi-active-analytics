@@ -1,39 +1,26 @@
 <div class="container-fluid py-2">
-  <!--<div class="row py-3">
-    <div class="col">
-      <div class="card card-outline-primary mb-3 text-center">
-        <div class="card-block">
-          <h2>User Data</h2>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card card-outline-primary mb-3 text-center">
-        <div class="card-block">
-          <h2>User Total: {{userData.length}}</h2>
-        </div>
-      </div>
-    </div>
-  </div>-->
   <div class="row py-2">
     <div class="col-4 py-2" style="overflow-y: auto; height: 95vh">
+      <div class="row py-1 text-center">
+          <h2>User Total: {{userData.length}}</h2>        
+      </div>
       <div class="row py-1 text-center" *ngFor="let userObj of userData">
         <div class="col">
           <div class="card" (click)="selectUser(userObj)">
-            <div class="card-block">
+            <div class="card-body">
               <h4 class="card-title">{{userObj.user.first_name}} {{userObj.user.last_name}}</h4>
               <p class="card-text">
-                <strong>Activity Logs:</strong> {{userObj.categories.length}} Logs<br/>
-                <strong>Event Logs:</strong> {{userObj.events.length}} logs
+                <strong>Activity Logs:</strong> {{userObj.activitylog_set.length}} Logs<br/>
+                <strong>Event Logs:</strong> {{userObj.eventlog_set.length}} logs
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col py-2">
+    <div class="col-8 py-2">
       <div class="card" style="height: 95vh">
-        <div class="card-block">
+        <div class="card-body">
           <h3 class="card-title text-center">{{currentUserData.user.first_name}} {{currentUserData.user.last_name}}</h3>
           <div class="card-text">
             <div class="row">

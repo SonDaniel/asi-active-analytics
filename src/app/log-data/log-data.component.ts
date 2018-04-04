@@ -73,7 +73,16 @@ export class LogDataComponent implements OnInit {
 
         this.overallDataChart = new Chart(overallDataCtx, {
           type: 'line',
-          data : overallData
+          data : overallData,
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
         });
     });
   }
